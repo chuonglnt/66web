@@ -12,15 +12,15 @@ import firebase from "firebase/compat/app";
 import "@/firebase/firebaseConfig";
 
 export default function Login() {
-  // useEffect(() => {
-  //   const userToken = localStorage.getItem("token");
+  useEffect(() => {
+    const userToken = localStorage.getItem("token");
 
-  //   if (userToken) {
-  //     // Token tồn tại - coi như người dùng đã đăng nhập
-  //     notifyError("Bạn đã đăng nhập");
-  //     redirectWithDelay("/", 1000);
-  //   }
-  // });
+    if (userToken) {
+      // Token tồn tại - coi như người dùng đã đăng nhập
+      notifyError("Bạn đã đăng nhập");
+      redirectWithDelay("/", 1000);
+    }
+  });
 
   const [userData, setFormData] = useState<userData>({
     uid: "",
