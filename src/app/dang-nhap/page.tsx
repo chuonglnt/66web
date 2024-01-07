@@ -8,8 +8,10 @@ import TextInput from "@/components/inputText";
 import userData from "@/models/userModel";
 import { redirectWithDelay } from "@/core/utils";
 import { notifySuccess, notifyError } from "@/components/notificationMessages";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db, app } from "@/lib/firebase";
+
 export default function Login() {
   useEffect(() => {
     const userToken = localStorage.getItem("token");
@@ -19,10 +21,10 @@ export default function Login() {
       notifyError("Bạn đã đăng nhập");
       redirectWithDelay("/", 1000);
     }
-  });
+  }, []);
 
   const [userData, setFormData] = useState<userData>({
-    uid: "",
+    id: "",
     email: "",
     password: "",
     firstName: "",
@@ -51,40 +53,55 @@ export default function Login() {
       notifyError("Mật khẩu không được để trống");
       return;
     }
+
+    const auth = getAuth();
+
     signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then(async (userCredential) => {
         const token = await (userCredential.user?.getIdToken?.() ?? null);
-        // Lưu token vào local storage hoặc cookie
         localStorage.setItem("token", token ?? "");
-        localStorage.setItem("userData", userData.imageUserUrl);
+        localStorage.setItem("userid", userCredential.user.uid ?? "");
         notifySuccess("Đăng nhập thành công");
         redirectWithDelay("/", 1000);
-        // Lưu ý: Firebase quản lý refresh token một cách tự động
+        // setLocalStore();
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
           notifyError("Email đã tồn tại");
-          console.log("66 - Lỗi đăng nhập:", error);
         } else if (error.code === "auth/invalid-email") {
           notifyError(
             "Tên tài khoản hoặc email không đúng. Vui lòng kiểm tra lại"
           );
-          console.log("66 - Lỗi đăng nhập:", error);
         } else if (error.code === "auth/wrong-password") {
           notifyError("Password không đúng. Vui lòng kiểm tra lại");
-          console.log("66 - Lỗi đăng nhập:", error);
         } else if (error.code === "auth/user-not-found") {
           notifyError("Tài khoản không tồn tại. Vui lòng kiểm tra lại");
-          console.log("66 - Lỗi đăng nhập:", error);
         } else if (
           typeof error === "object" &&
           error !== null &&
           "code" in error
         ) {
           notifyError("Lỗi đăng nhập. Vui long kiểm tra lại");
-          console.log("66 - Lỗi đăng nhập:", error);
         }
       });
+    // const setLocalStore = async () => {
+    //   // Lấy thông tin người dùng từ Firestore
+    //   const uid = localStorage.getItem("userid");
+    //   const userRef = doc(db, "users", `${uid}`);
+    //   const docSnap = await getDoc(userRef);
+    //   console.log("************************* userRef:", userRef);
+    //   console.log("************************* docSnap:", docSnap);
+    //   if (docSnap.exists()) {
+    //     const userData = docSnap.data();
+    //     // Lưu token vào local storage hoặc cookie
+    //     localStorage.setItem("user", JSON.stringify(userData.firstName));
+    //     localStorage.setItem("user", JSON.stringify(userData.imageUserUrl));
+
+    //     // Lưu ý: Firebase quản lý refresh token một cách tự động
+    //   } else {
+    //     console.log("No user data found!");
+    //   }
+    // };
   };
 
   return (

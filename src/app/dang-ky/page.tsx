@@ -12,7 +12,8 @@ import {
   redirectWithDelay,
 } from "@/core/utils";
 import { auth, db } from "@/lib/firebase";
-
+import { setDoc, doc, addDoc, collection } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 export default function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -20,7 +21,7 @@ export default function RegisterForm() {
     setConfirmPassword(x.target.value);
   };
   const [UserData, setUserData] = useState<UserModel>({
-    uid: "",
+    id: "",
     email: "",
     password: "",
     firstName: "",
@@ -47,7 +48,7 @@ export default function RegisterForm() {
       UserData.firstName === "" ||
         UserData.lastName === "" ||
         UserData.birthDay === "" ||
-        UserData.email !== "" ||
+        UserData.email === "" ||
         UserData.password === "" ||
         confirmPassword === "" ||
         UserData.defaultAddress === "" ||
@@ -76,34 +77,41 @@ export default function RegisterForm() {
       notifyError("Số điện thoại không đúng định dạng");
       return;
     }
+    const auth = getAuth();
 
-    try {
-      // Tạo người dùng trên Firebase Authentication
-      const userCredential = await auth.createUserWithEmailAndPassword(
-        auth,
-        UserData.email,
-        UserData.password
-      );
-      const user = userCredential.user;
+    createUserWithEmailAndPassword(auth, UserData.email, UserData.password)
+      .then((userCredential) => {
+        // Signed up
+        const user = userCredential.user;
 
-      if (!user) throw new Error("User creation failed");
-
-      // Lưu thông tin người dùng vào Firestore
-      const userRef = await db
-        .collection("users")
-        .doc(user.uid)
-        .set({
+        // Cập nhật UserData với uid
+        const updatedUserData = {
           ...UserData,
-          uid: user.uid,
-        });
+          id: user.uid,
+        };
 
-      // Lưu thông tin vào local storage
-      notifySuccess("Đăng ký thành công. Vui lòng đăng nhập");
-      redirectWithDelay("/dang-nhap", 2000);
-    } catch (error) {
-      notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
-    }
+        // Thêm vào Firestore
+        return addUserDataToFirestore(updatedUserData);
+      })
+      .catch((error) => {
+        // Xử lý lỗi
+        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
+      });
+
+    // Hàm thêm dữ liệu người dùng vào Firestore
+    const addUserDataToFirestore = async (userData: UserModel) => {
+      try {
+        await addDoc(collection(db, "users"), userData);
+
+        notifySuccess("Đăng ký thành công. Vui lòng đăng nhập");
+        redirectWithDelay("/dang-nhap", 2000);
+        // Lưu thông tin vào local storage
+      } catch (error) {
+        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
+      }
+    };
   };
+
   return (
     <div className="max-w-md mx-auto my-32 p-6 bg-white rounded-md shadow-2xl">
       <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">

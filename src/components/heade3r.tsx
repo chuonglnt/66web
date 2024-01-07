@@ -8,7 +8,6 @@ import React, { useState, useEffect, useRef } from "react";
 import classNames from "classnames";
 import { notifyError, notifySuccess } from "@/components/notificationMessages";
 import { redirectWithDelay } from "@/core/utils";
-import HeaderUser from "@/components/headerUser";
 import avata from "@/assets/images/avarta.png";
 
 const Header: React.FC = () => {
