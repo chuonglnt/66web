@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "test.td"
-  ],
+    "test.td",
+    "src/app/api/route.js"
+, "src/lib/firebase.js"  ],
   "exclude": ["node_modules"]
 }

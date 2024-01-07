@@ -11,7 +11,8 @@ import {
   checkPasswordLength,
   redirectWithDelay,
 } from "@/core/utils";
-import { auth, firestore } from "@/firebase/firebaseConfig";
+import { auth, db } from "@/lib/firebase";
+
 export default function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -42,15 +43,16 @@ export default function RegisterForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (
+      (console.log(UserData),
       UserData.firstName === "" ||
-      UserData.lastName === "" ||
-      UserData.birthDay === "" ||
-      UserData.email !== "" ||
-      UserData.password === "" ||
-      confirmPassword === "" ||
-      UserData.defaultAddress === "" ||
-      UserData.shippingAddress === "" ||
-      UserData.userPhone === ""
+        UserData.lastName === "" ||
+        UserData.birthDay === "" ||
+        UserData.email !== "" ||
+        UserData.password === "" ||
+        confirmPassword === "" ||
+        UserData.defaultAddress === "" ||
+        UserData.shippingAddress === "" ||
+        UserData.userPhone === "")
     ) {
       notifyError("Thông tin không được để trống. Vui lòng kiểm tra lại");
       return;
@@ -78,6 +80,7 @@ export default function RegisterForm() {
     try {
       // Tạo người dùng trên Firebase Authentication
       const userCredential = await auth.createUserWithEmailAndPassword(
+        auth,
         UserData.email,
         UserData.password
       );
@@ -86,7 +89,7 @@ export default function RegisterForm() {
       if (!user) throw new Error("User creation failed");
 
       // Lưu thông tin người dùng vào Firestore
-      await firestore
+      const userRef = await db
         .collection("users")
         .doc(user.uid)
         .set({

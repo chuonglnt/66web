@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import Header2 from "@/components/header";
+import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Copyright from "@/components/copyright";
 import NotificationMessages from "@/components/notificationMessages";
-import Providers from "@/components/provider";
 
 const roboto = Roboto({
   display: "swap",
@@ -35,9 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <div className="content-wrapper max-w-screen-2xl text-base mx-auto bg-slate-200">
+        <div className="content-wrapper max-w-screen-2xl text-base mx-auto bg-white">
           <NotificationMessages />
-          <Header2 />
+          <Header />
           {children}
           <Footer />
           <Copyright />

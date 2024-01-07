@@ -8,9 +8,8 @@ import TextInput from "@/components/inputText";
 import userData from "@/models/userModel";
 import { redirectWithDelay } from "@/core/utils";
 import { notifySuccess, notifyError } from "@/components/notificationMessages";
-import firebase from "firebase/compat/app";
-import "@/firebase/firebaseConfig";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 export default function Login() {
   useEffect(() => {
     const userToken = localStorage.getItem("token");
@@ -52,21 +51,12 @@ export default function Login() {
       notifyError("Mật khẩu không được để trống");
       return;
     }
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(userData.email, userData.password)
+    signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then(async (userCredential) => {
         const token = await (userCredential.user?.getIdToken?.() ?? null);
-        // const saveUserInfo = (userData) => {
-        //   const userInfoToSave = {
-        //     firstName: userData.firstName,
-        //     shippingAddress: userData.shippingAddress,
-        //     imageUserUrl: userData.imageUserUrl
-        //   };
         // Lưu token vào local storage hoặc cookie
         localStorage.setItem("token", token ?? "");
         localStorage.setItem("userData", userData.imageUserUrl);
-        console.log("66 Login successful!", userCredential);
         notifySuccess("Đăng nhập thành công");
         redirectWithDelay("/", 1000);
         // Lưu ý: Firebase quản lý refresh token một cách tự động

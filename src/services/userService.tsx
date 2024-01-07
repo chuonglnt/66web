@@ -1,6 +1,6 @@
 // FirebaseService.ts
 
-import firebase from "@/firebase/firebaseConfig";
+import firebase from "@/lib/firebaseConfig";
 import { UserModel } from "@/models/userModel";
 
 class FirebaseService {
