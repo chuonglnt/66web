@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header";
+import Header3 from "@/components/header3";
 import Footer from "@/components/footer";
 import Copyright from "@/components/copyright";
 import NotificationMessages from "@/components/notificationMessages";
@@ -36,7 +36,7 @@ export default function RootLayout({
       <body className={roboto.className}>
         <div className="content-wrapper max-w-screen-2xl text-base mx-auto bg-white">
           <NotificationMessages />
-          <Header />
+          <Header3 />
           {children}
           <Footer />
           <Copyright />
