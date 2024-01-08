@@ -69,7 +69,7 @@ const Navbar = () => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="c66-icon"
+            className="c66-menu-icon-top"
           >
             <path
               strokeLinecap="round"
@@ -79,7 +79,7 @@ const Navbar = () => {
           </svg>
         </Button>
         <Menu
-          className="items-center w-full"
+          className="flex justify-center items-center w-full"
           id="basic-menu"
           anchorEl={anchorEl}
           open={open}

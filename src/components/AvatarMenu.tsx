@@ -62,7 +62,7 @@ export default function AvatarMenu() {
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  className="c66-icon"
+                  className="c66-cart-icon-top"
                 >
                   <path
                     strokeLinecap="round"
@@ -113,7 +113,7 @@ export default function AvatarMenu() {
             </Menu>
           </div>
         ) : (
-          <div className="mt-3">
+          <div className="mt-4 w-16 sm:mt-4 sm:w-auto">
             <Link className="c66-top-menu-button" href="/dang-nhap">
               Đăng nhập
             </Link>
