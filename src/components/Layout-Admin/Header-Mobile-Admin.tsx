@@ -2,8 +2,8 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SIDENAV_ITEMS } from "./constantsMenu";
-import { SideNavItem } from "./types";
+import { SIDENAV_ITEMS } from "./Constants-Menu-Admin";
+import { SideNavItem } from "./Types-Admin";
 import { Icon } from "@iconify/react";
 import { motion, useCycle } from "framer-motion";
 

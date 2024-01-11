@@ -9,7 +9,7 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase"; // Đường dẫn đến cấu hình Firebase của bạn
+import { db } from "@/Lib/firebase"; // Đường dẫn đến cấu hình Firebase của bạn
 
 export default function BaseService() {
   getAll;
@@ -32,7 +32,7 @@ export const getById = async <T extends DocumentData>(
 ): Promise<T | undefined> => {
   const docRef = doc(db, collectionName, documentId);
   const docSnapshot = await getDoc(docRef);
-  
+
   if (docSnapshot.exists()) {
     return { id: docSnapshot.id, ...(docSnapshot.data() as T) };
   } else {

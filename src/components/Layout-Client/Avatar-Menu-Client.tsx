@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { app } from "@/lib/firebase";
+import { app } from "@/Lib/firebase";
 
 export default function AvatarMenu() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

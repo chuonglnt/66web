@@ -4,18 +4,18 @@ import {
   ValidPhoneNumber,
   checkPasswordLength,
   redirectWithDelay,
-} from "@/core/utils";
+} from "@/Core/Utils";
 import { useState, FormEvent, useEffect } from "react";
-import UserModel from "@/models/userModel";
-import TextInput from "@/components/inputText";
-import Button from "@/components/button";
-import { notifySuccess, notifyError } from "@/components/notificationMessages";
-import { auth, db } from "@/lib/firebase";
+import UserModel from "@/Models/User-Model";
+import TextInput from "@/Components/Input-Text";
+import Button from "@/Components/Button";
+import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
+import { auth, db } from "@/Lib/firebase";
 import { setDoc, doc, addDoc, collection } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import EnumSelect from "@/components/enumSelect";
-import { Gender } from "@/core/globalEnum";
-import { formatDate } from "@/core/utils";
+import EnumSelect from "@/Components/Enum-Select";
+import { Gender } from "@/Core/Global-Enums";
+import { formatDate } from "@/Core/Utils";
 
 export default function RegisterForm() {
   const [UserData, setUserData] = useState<UserModel>({

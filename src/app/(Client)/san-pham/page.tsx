@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { notifySuccess, notifyError } from "@/components/notificationMessages";
+import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
 
 const AnotherComponent: React.FC = () => {
   const handleSuccessClick = () => {

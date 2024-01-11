@@ -1,4 +1,16 @@
 {
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "test.td",
+    "src/app/api/route.js",
+    "src/Lib/firebase.js",
+    "src/app/(Dashboard)/layout.tsx",
+    "src/app/(View)/layout.tsx"
+  ],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -20,19 +32,18 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "#/*": ["./public/*"]
+      "#/*": ["./public/*"],
+
+      "@/icons": ["./public/assets/icons/*"],
+      "@/images": ["./public/assets/images/*"],
+      "@/videos": ["./public/assets/videos/*"],
+
+      "@/Components": ["./src/app/components/*"],
+
+      "@/Core": ["./src/app/Core/*"],
+      "@/Lib": ["./src/app/Lib/*"],
+      "@/Models": ["./src/app/Models/*"],
+      "@/Services": ["./src/app/Services/*"]
     }
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "test.td",
-    "src/app/api/route.js",
-    "src/lib/firebase.js",
-    "src/app/(Dashboard)/layout.tsx",
-    "src/app/(View)/layout.tsx"
-  ],
-  "exclude": ["node_modules"]
+  }
 }

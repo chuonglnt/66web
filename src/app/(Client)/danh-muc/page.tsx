@@ -9,7 +9,7 @@ import {
   addDoc,
   query,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/Lib/firebase";
 import { useState } from "react";
 import { getAuth } from "firebase/auth";
 import { id } from "date-fns/locale";
