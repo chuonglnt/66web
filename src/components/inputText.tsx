@@ -21,10 +21,7 @@ const TextInput: React.FC<TextInputProps> = ({
 }) => {
   return (
     <div className="mb-4">
-      <label
-        className="block text-gray-700 text-sm font-bold mb-2"
-        htmlFor={name}
-      >
+      <label className="block text-gray-700 text-sm font-bold mb-2">
         {label}
       </label>
       <input
@@ -33,7 +30,7 @@ const TextInput: React.FC<TextInputProps> = ({
         name={name}
         value={value}
         placeholder={placeholder}
-        className="w-full p-2 border border-gray-300 rounded-md"
+        className="w-full p-2 focus:border-blue-400 border hover:border invalid:border-red-300 required:border-red-300 enabled:hover:border-black rounded-md"
         required={isRequired}
         onChange={onChange}
       />

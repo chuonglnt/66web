@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
-import "./globals.css";
-import Header3 from "@/components/header3";
+import "@/app/globals.css";
+import HeaderMenu from "@/components/headerMenu";
 import Footer from "@/components/footer";
 import Copyright from "@/components/copyright";
 import NotificationMessages from "@/components/notificationMessages";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 const roboto = Roboto({
   display: "swap",
@@ -32,15 +33,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={roboto.className}>
-        <div className="content-wrapper max-w-screen-2xl text-base mx-auto bg-white">
+    <html className="bg-slate-100" lang="en">
+      <body className={`{roboto.className} bg-slate-200`}>
+        <AppRouterCacheProvider>
           <NotificationMessages />
-          <Header3 />
-          {children}
+          <div className="min-h-screen content-wrapper max-w-screen-2xl mx-auto bg-slate-200 shadow-2xl rounded-2xl">
+            <NotificationMessages />
+            <HeaderMenu />
+            {children}
+          </div>
           <Footer />
           <Copyright />
-        </div>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

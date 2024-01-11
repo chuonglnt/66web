@@ -1,4 +1,4 @@
-import Gender from "@/core/globalEnum";
+import { GenderType } from "@/core/globalEnum";
 
 export interface UserModel {
   id: string;
@@ -6,8 +6,8 @@ export interface UserModel {
   password: string;
   firstName: string;
   lastName: string;
-  birthDay: string;
-  gender: string;
+  birthDay: Date;
+  gender: GenderType;
   defaultAddress: string;
   shippingAddress: string;
   userPhone: string;

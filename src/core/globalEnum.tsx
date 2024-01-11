@@ -1,7 +1,10 @@
 export enum Gender {
-  Male = "Male",
-  Female = "Female",
-  Other = "Other",
+  Male = "Nam",
+  Female = "Nữ",
+  Other = "Khác",
 }
 
-export default Gender;
+export enum Status {
+  Online = "Online",
+  Offline = "Offline",
+}

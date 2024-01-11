@@ -16,45 +16,9 @@ const Navbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  // const [isMenuExpanded, setMenuExpanded] = useState(false);
-  // const menuRef = useRef<HTMLUListElement>(null);
-  // const iconRef = useRef<HTMLDivElement>(null);
-
-  // const useAuthStatus = () => {
-  //   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  //   useEffect(() => {
-  //     const token = localStorage.getItem("token");
-  //     const UserData = localStorage.getItem("UserData");
-  //     setIsLoggedIn(!!token);
-
-  //     const handleOutsideClick = (event: MouseEvent) => {
-  //       const topMenu = menuRef.current;
-  //       const toggleTopMenuIcon = document.getElementById("toggle-top-menu");
-  //       if (
-  //         topMenu &&
-  //         toggleTopMenuIcon &&
-  //         !topMenu.contains(event.target as Node) &&
-  //         !toggleTopMenuIcon.contains(event.target as Node)
-  //       ) {
-  //         // Click ra ngoài
-  //         setMenuExpanded(false);
-  //       }
-  //       document.addEventListener("click", handleOutsideClick);
-  //       return () => {
-  //         document.removeEventListener("click", handleOutsideClick);
-  //       };
-  //     };
-  //   }, []);
-
-  //   return isLoggedIn;
-  // };
-  // const toggleMenuIcon = () => {
-  //   setMenuExpanded((prev) => !prev);
-  // };
 
   return (
-    <div>
+    <div className="lg:mr-32">
       <div className="lg:hidden w-auto mx-auto">
         <Button
           id="basic-button"

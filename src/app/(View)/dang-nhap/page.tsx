@@ -105,7 +105,7 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto my-20 p-6 bg-white rounded-md shadow-2xl">
+    <div className="max-w-md mx-auto my-20 p-6 bg-slate-50 rounded-md shadow-2xl">
       <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">
         Đăng Nhập
       </h2>

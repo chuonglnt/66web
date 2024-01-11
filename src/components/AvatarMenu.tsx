@@ -51,7 +51,7 @@ export default function AvatarMenu() {
 
   return (
     <div>
-      <div className="flex justify-center text-center">
+      <div className="flex justify-center text-center lg:-mt-3 sm:mt-0">
         <div>
           <ul className="basic-4/6 lg:basic-1/6 flex justify-start lg:justify-end items-center uppercase lg:text-sm lg:font-medium text-xs font-normal gap-1 ml-auto lg:mx-2 text-gray-600 lg:gap-2">
             <li className="c66-top-menu-item my-3">
@@ -78,7 +78,7 @@ export default function AvatarMenu() {
           </ul>
         </div>
         {isLoggedIn ? (
-          <div>
+          <div className="mt-1 sm:mt-2 lg:mt-3 mx-auto">
             <Button
               id="basic-button"
               aria-controls={open ? "basic-menu" : undefined}
@@ -99,7 +99,7 @@ export default function AvatarMenu() {
               }}
             >
               <MenuItem>
-                <Link href="/tai-khoản">Thông tin tài khoản</Link>
+                <Link href="/admin">Thông tin tài khoản</Link>
               </MenuItem>
               <MenuItem>
                 <Link href="/doi-mat-khau">Đổi mật khẩu</Link>
@@ -113,7 +113,7 @@ export default function AvatarMenu() {
             </Menu>
           </div>
         ) : (
-          <div className="mt-4 w-16 sm:mt-4 sm:w-auto">
+          <div className="mt-4 lg:mt-6 w-16 sm:w-auto">
             <Link className="c66-top-menu-button" href="/dang-nhap">
               Đăng nhập
             </Link>

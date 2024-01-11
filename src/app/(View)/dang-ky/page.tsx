@@ -14,6 +14,12 @@ import {
 import { auth, db } from "@/lib/firebase";
 import { setDoc, doc, addDoc, collection } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import RadioButton from "@/components/enumRadioButton";
+import EnumSelect from "@/components/enumSelect";
+import EnumRadioButton from "@/components/enumRadioButton";
+import { Gender } from "@/core/globalEnum";
+import DateInput from "@/components/inputDate";
+
 export default function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -26,8 +32,8 @@ export default function RegisterForm() {
     password: "",
     firstName: "",
     lastName: "",
-    birthDay: "",
-    gender: "",
+    birthDay: new Date(),
+    gender: Gender,
     defaultAddress: "",
     shippingAddress: "",
     userPhone: "",
@@ -41,14 +47,20 @@ export default function RegisterForm() {
       [name]: value,
     }));
   };
+  const [selectedGender, setSelectedGender] = useState("");
+  console.log(selectedGender);
+
+  const handleGenderChange = (value: string) => {
+    setSelectedGender(value as Gender);
+  };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (
       (console.log(UserData),
       UserData.firstName === "" ||
         UserData.lastName === "" ||
-        UserData.birthDay === "" ||
         UserData.email === "" ||
+        UserData.gender === "" ||
         UserData.password === "" ||
         confirmPassword === "" ||
         UserData.defaultAddress === "" ||
@@ -83,7 +95,7 @@ export default function RegisterForm() {
       .then((userCredential) => {
         // Signed up
         const user = userCredential.user;
-
+        console.log("Đăng ký thất bại. userrrrrrrrrrrrrrr:", user);
         // Cập nhật UserData với uid
         const updatedUserData = {
           ...UserData,
@@ -95,7 +107,8 @@ export default function RegisterForm() {
       })
       .catch((error) => {
         // Xử lý lỗi
-        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
+        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!1111");
+        console.log("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!", error);
       });
 
     // Hàm thêm dữ liệu người dùng vào Firestore
@@ -107,17 +120,18 @@ export default function RegisterForm() {
         redirectWithDelay("/dang-nhap", 2000);
         // Lưu thông tin vào local storage
       } catch (error) {
-        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
+        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!2222");
+        console.log("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!", error);
       }
     };
   };
 
   return (
-    <div className="max-w-md mx-auto my-10 p-6 bg-white rounded-md shadow-2xl">
+    <div className="max-w-md mx-auto my-4 p-6 bg-slate-50 rounded-md shadow-2xl">
       <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">
         Đăng Ký Tài Khoản
       </h2>
-      <form className="max-w-md mx-auto mt-10">
+      <form className="mx-auto mt-10">
         <TextInput
           label="Email"
           type="text"
@@ -133,26 +147,18 @@ export default function RegisterForm() {
           name="password"
           value={UserData.password}
           onChange={handleChange}
-          placeholder="Password"
+          placeholder="Mật khẩu"
           isRequired={true}
         />
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="Xác nhận lại mật khẩu"
-          >
-            Xác nhận lại mật khẩu
-          </label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={confirmPassword}
-            onChange={handlePasswordChange}
-            placeholder="Xác nhận lại mật khẩu"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            required={true}
-          />
-        </div>
+        <TextInput
+          label="Xác nhận mật khẩu"
+          type="password"
+          name="confirmPassword"
+          value={confirmPassword}
+          onChange={handlePasswordChange}
+          placeholder="Xác nhận lại mật khẩu"
+          isRequired={true}
+        />
         <TextInput
           label="Tên"
           type="text"
@@ -179,26 +185,21 @@ export default function RegisterForm() {
             type="date"
             name="birthDay"
             value={UserData.birthDay}
+            max="2010-01-01"
+            min="1960-01-01"
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
-
-        <TextInput
-          label="Giớ tính"
-          type="text"
-          name="gender"
+        <EnumSelect
+          label="Giới tính"
+          enumObj={Gender}
+          selectedValue={selectedGender}
           value={UserData.gender}
-          onChange={handleChange}
-          placeholder="Giới tính của bạn"
-          isRequired={true}
+          onChange={handleGenderChange}
+          includeEmpty={true}
+          emptyLabel="Chọn giới tính" // Label tùy chỉnh cho option rỗng
         />
-        {/* <RadioButton
-          labelName="Giới tính"
-          name="gender"
-          value={selectedGenderOptions}
-          onChange={setSelectedGenderOptions}
-        /> */}
         <TextInput
           label="Địa chỉ mặc định"
           type="text"
