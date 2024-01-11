@@ -6,7 +6,7 @@ const Logo = () => {
   return (
     <Link href="/">
       <Image
-        className="mt-1 ml-2 -mb-2 logo hover:cursor-pointer basic-1/6 text-center"
+        className="-mt-2 ml-2 -mb-2 logo hover:cursor-pointer basic-1/6 text-center"
         src="/assets/images/logo.png"
         alt="66 Shop"
         width={200}

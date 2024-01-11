@@ -1,31 +1,23 @@
 "use client";
-import { useState, FormEvent } from "react";
-import UserModel from "@/models/userModel";
-import TextInput from "@/components/inputText";
-import Button from "@/components/button";
-import { notifySuccess, notifyError } from "@/components/notificationMessages";
 import {
   validateEmail,
-  validateNoSpecialCharacters,
   ValidPhoneNumber,
   checkPasswordLength,
   redirectWithDelay,
 } from "@/core/utils";
+import { useState, FormEvent, useEffect } from "react";
+import UserModel from "@/models/userModel";
+import TextInput from "@/components/inputText";
+import Button from "@/components/button";
+import { notifySuccess, notifyError } from "@/components/notificationMessages";
 import { auth, db } from "@/lib/firebase";
 import { setDoc, doc, addDoc, collection } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import RadioButton from "@/components/enumRadioButton";
 import EnumSelect from "@/components/enumSelect";
-import EnumRadioButton from "@/components/enumRadioButton";
 import { Gender } from "@/core/globalEnum";
-import DateInput from "@/components/inputDate";
+import { formatDate } from "@/core/utils";
 
 export default function RegisterForm() {
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handlePasswordChange = (x: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(x.target.value);
-  };
   const [UserData, setUserData] = useState<UserModel>({
     id: "",
     email: "",
@@ -33,12 +25,27 @@ export default function RegisterForm() {
     firstName: "",
     lastName: "",
     birthDay: new Date(),
-    gender: Gender,
+    gender: "" || Gender.Male || Gender.Female || Gender.Other,
     defaultAddress: "",
     shippingAddress: "",
     userPhone: "",
     imageUserUrl: "/assets/images/avataDefault.png",
   });
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const handlePasswordChange = (x: React.ChangeEvent<HTMLInputElement>) => {
+    setConfirmPassword(x.target.value);
+  };
+
+  const handleGenderChange = (value: Gender) => {
+    setUserData((prevUserData) => {
+      if (typeof prevUserData === "object" && prevUserData !== null) {
+        return { ...prevUserData, gender: value };
+      }
+      console.log("UserData.gender", UserData.gender);
+      return prevUserData;
+    });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,29 +54,23 @@ export default function RegisterForm() {
       [name]: value,
     }));
   };
-  const [selectedGender, setSelectedGender] = useState("");
-  console.log(selectedGender);
 
-  const handleGenderChange = (value: string) => {
-    setSelectedGender(value as Gender);
-  };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (
-      (console.log(UserData),
       UserData.firstName === "" ||
-        UserData.lastName === "" ||
-        UserData.email === "" ||
-        UserData.gender === "" ||
-        UserData.password === "" ||
-        confirmPassword === "" ||
-        UserData.defaultAddress === "" ||
-        UserData.shippingAddress === "" ||
-        UserData.userPhone === "")
+      UserData.lastName === "" ||
+      UserData.email === "" ||
+      UserData.password === "" ||
+      confirmPassword === "" ||
+      UserData.defaultAddress === "" ||
+      UserData.shippingAddress === "" ||
+      UserData.userPhone === ""
     ) {
       notifyError("Thông tin không được để trống. Vui lòng kiểm tra lại");
       return;
     }
+
     const isValidEmail = validateEmail(UserData.email);
     if (!isValidEmail) {
       notifyError("Email không đúng định dạng");
@@ -184,7 +185,7 @@ export default function RegisterForm() {
           <input
             type="date"
             name="birthDay"
-            value={UserData.birthDay}
+            value={formatDate(UserData.birthDay).toString()}
             max="2010-01-01"
             min="1960-01-01"
             onChange={handleChange}
@@ -194,10 +195,9 @@ export default function RegisterForm() {
         <EnumSelect
           label="Giới tính"
           enumObj={Gender}
-          selectedValue={selectedGender}
-          value={UserData.gender}
-          onChange={handleGenderChange}
-          includeEmpty={true}
+          selectedValue={UserData.gender}
+          onChange={(value: string) => handleGenderChange(value as Gender)}
+          includeEmpty={false}
           emptyLabel="Chọn giới tính" // Label tùy chỉnh cho option rỗng
         />
         <TextInput
