@@ -9,8 +9,7 @@ import userData from "@/models/userModel";
 import { redirectWithDelay } from "@/core/utils";
 import { notifySuccess, notifyError } from "@/components/notificationMessages";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { db, app } from "@/lib/firebase";
+import { Gender } from "@/core/globalEnum";
 
 export default function Login() {
   useEffect(() => {
@@ -29,8 +28,8 @@ export default function Login() {
     password: "",
     firstName: "",
     lastName: "",
-    birthDay: "",
-    gender: "",
+    birthDay: new Date(),
+    gender: "" || Gender.Male || Gender.Female || Gender.Other,
     defaultAddress: "",
     shippingAddress: "",
     userPhone: "",

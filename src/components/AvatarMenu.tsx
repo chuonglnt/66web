@@ -113,7 +113,7 @@ export default function AvatarMenu() {
             </Menu>
           </div>
         ) : (
-          <div className="mt-4 lg:mt-6 w-16 sm:w-auto">
+          <div className="mt-4 lg:mt-6 lg:mr-4 w-16 sm:w-auto">
             <Link className="c66-top-menu-button" href="/dang-nhap">
               Đăng nhập
             </Link>
