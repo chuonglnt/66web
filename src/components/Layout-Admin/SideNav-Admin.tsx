@@ -6,8 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { SIDENAV_ITEMS } from "./constantsMenu";
-import { SideNavItem } from "./types";
+import { SIDENAV_ITEMS } from "./Constants-Menu-Admin";
+import { SideNavItem } from "./Types-Admin";
 import { Icon } from "@iconify/react";
 
 const SideNavAdmin = () => {
@@ -50,7 +50,7 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
     <div className="">
       {item.submenu ? (
         <>
-          <button          
+          <button
             onClick={toggleSubMenu}
             className={`flex flex-row items-center p-2 rounded-lg hover-bg-zinc-100 w-full justify-between hover:bg-zinc-100 ${
               pathname.includes(item.path) ? "bg-zinc-100" : ""

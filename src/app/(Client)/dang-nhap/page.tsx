@@ -4,12 +4,12 @@ import { useState, useEffect, ChangeEvent } from "react";
 import Image from "next/image";
 import logoGoogle from "#/assets/images/logo_Google.png";
 import logoFacebook from "#/assets/images/Logo_Facebook.png";
-import TextInput from "@/components/inputText";
-import userData from "@/models/userModel";
-import { redirectWithDelay } from "@/core/utils";
-import { notifySuccess, notifyError } from "@/components/notificationMessages";
+import TextInput from "@/Components/Input-Text";
+import userData from "@/Models/User-Model";
+import { redirectWithDelay } from "@/Core/Utils";
+import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { Gender } from "@/core/globalEnum";
+import { Gender } from "@/Core/Global-Enums";
 
 export default function Login() {
   useEffect(() => {

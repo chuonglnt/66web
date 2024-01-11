@@ -1,12 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
-import useScroll from "@/core/use-scroll";
-import { cn } from "@/core/utils";
+import { cn } from "@/Core/Utils";
+import UseScroll from "@/Core/Use-Scroll";
 import Image from "next/image";
 
 const HeaderAdmin = () => {
-  const scrolled = useScroll(5);
+  const scrolled = UseScroll(5);
   const selectedLayout = useSelectedLayoutSegment();
 
   return (

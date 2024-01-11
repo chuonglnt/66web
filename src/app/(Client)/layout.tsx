@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "@/app/globals.css";
-import HeaderMenu from "@/components/headerMenu";
-import Footer from "@/components/footer";
-import Copyright from "@/components/copyright";
-import NotificationMessages from "@/components/notificationMessages";
+import HeaderMenu from "@/Components/Layout-Client/Header-Menu-Client";
+import Footer from "@/Components/Layout-Client/Footer";
+import Copyright from "@/Components/Layout-Client/Copyright";
+import NotificationMessages from "@/Components/Notification-Messages";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 const roboto = Roboto({

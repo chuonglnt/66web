@@ -1,4 +1,4 @@
-import { Gender } from "@/core/globalEnum";
+import { Gender } from "@/Core/Global-Enums";
 
 export interface UserModel {
   id: string;
