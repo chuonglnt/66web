@@ -1,19 +1,32 @@
 import { Gender } from "@/Core/Global-Enums";
 
 export interface UserModel {
-  id: string;
+  uid: string;
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-  birthDay: Date;
+  birthDay: string;
   gender: Gender;
   defaultAddress: string;
   shippingAddress: string;
-  userPhone: string;
-  imageUserUrl: string;
+  displayName: string;
+  phoneNumber: string;
+  photoUrl: string;
+  createdAt: string;
+  updatedAt: string;
+  emailVerified: boolean;
+  isdeleted: boolean;
+
   // additionalInfo?: Record<string, any>;
 }
+
+export interface LoginModel {
+  email: string;
+  password: string;
+  // additionalInfo?: Record<string, any>;
+}
+
 // class UserModel implements IUser {
 //   id: number;
 //   userName: string;

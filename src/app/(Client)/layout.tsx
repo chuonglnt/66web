@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html className="bg-slate-100" lang="en">
-      <body className={`{roboto.className} bg-slate-200`}>
+      <body className={`${roboto.className} bg-slate-200`}>
         <AppRouterCacheProvider>
           <NotificationMessages />
           <div className="min-h-screen content-wrapper max-w-screen-2xl mx-auto bg-slate-200 shadow-2xl rounded-2xl">

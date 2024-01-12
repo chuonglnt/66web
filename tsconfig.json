@@ -6,7 +6,7 @@
     ".next/types/**/*.ts",
     "test.td",
     "src/app/api/route.js",
-    "src/Lib/firebase.js",
+    "src/lib/firebase/firebase.config.js",
     "src/app/(Dashboard)/layout.tsx",
     "src/app/(View)/layout.tsx"
   ],
@@ -41,7 +41,7 @@
       "@/Components": ["./src/app/components/*"],
 
       "@/Core": ["./src/app/Core/*"],
-      "@/Lib": ["./src/app/Lib/*"],
+      "@/lib": ["./src/app/lib/*"],
       "@/Models": ["./src/app/Models/*"],
       "@/Services": ["./src/app/Services/*"]
     }
