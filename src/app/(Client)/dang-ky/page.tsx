@@ -4,45 +4,63 @@ import {
   ValidPhoneNumber,
   checkPasswordLength,
   redirectWithDelay,
+  formatDateTime,
+  convertToDateTime,
 } from "@/Core/Utils";
 import { useState, FormEvent, useEffect } from "react";
-import UserModel from "@/Models/User-Model";
+import UserModel from "@/Core/Base-Model";
 import TextInput from "@/Components/Input-Text";
 import Button from "@/Components/Button";
 import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
-import { auth, db } from "@/Lib/firebase";
-import { setDoc, doc, addDoc, collection } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { db, auth } from "@/lib/firebase/firebase.config";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  deleteUser,
+} from "firebase/auth";
 import EnumSelect from "@/Components/Enum-Select";
 import { Gender } from "@/Core/Global-Enums";
-import { formatDate } from "@/Core/Utils";
+import hashPassword from "@/Core/Hash-Password";
 
 export default function RegisterForm() {
   const [UserData, setUserData] = useState<UserModel>({
-    id: "",
+    uid: "",
     email: "",
     password: "",
     firstName: "",
     lastName: "",
-    birthDay: new Date(),
+    birthDay: "",
     gender: "" || Gender.Male || Gender.Female || Gender.Other,
     defaultAddress: "",
     shippingAddress: "",
-    userPhone: "",
-    imageUserUrl: "/assets/images/avataDefault.png",
+    displayName: "",
+    phoneNumber: "",
+    photoUrl: "/assets/images/avataDefault.png",
+    createdAt: formatDateTime(new Date()),
+    updatedAt: formatDateTime(new Date()),
+    emailVerified: false,
+    isdeleted: false,
   });
+
+  const [birthDay, setbirthDay] = useState(Date);
+  const handleDateChange = (x: React.ChangeEvent<HTMLInputElement>) => {
+    const rawDate = x.target.value;
+    // Chuyển đổi sang dd/mm/yyyy
+    const formatedDate = rawDate.split("-").reverse().join("/");
+    setUserData({ ...UserData, birthDay: formatedDate });
+    setbirthDay(rawDate);
+  };
 
   const [confirmPassword, setConfirmPassword] = useState("");
   const handlePasswordChange = (x: React.ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(x.target.value);
   };
-
   const handleGenderChange = (value: Gender) => {
     setUserData((prevUserData) => {
       if (typeof prevUserData === "object" && prevUserData !== null) {
         return { ...prevUserData, gender: value };
       }
-      console.log("UserData.gender", UserData.gender);
       return prevUserData;
     });
   };
@@ -54,6 +72,16 @@ export default function RegisterForm() {
       [name]: value,
     }));
   };
+  // Hàm hash mật khẩu
+  // function HashUserPassword(UserData: UserModel) {
+  //   hashPassword(UserData.password)
+  //     .then((hashedPassword) => {
+  //       UserData.password = hashedPassword as string;
+  //       setUserData(UserData);
+  //       // Cập nhật mật khẩu đã hash vào UserData
+  //     })
+  //     .catch((error) => console.error("Lỗi khi hash mật khẩu:", error));
+  // }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -65,7 +93,7 @@ export default function RegisterForm() {
       confirmPassword === "" ||
       UserData.defaultAddress === "" ||
       UserData.shippingAddress === "" ||
-      UserData.userPhone === ""
+      UserData.phoneNumber === ""
     ) {
       notifyError("Thông tin không được để trống. Vui lòng kiểm tra lại");
       return;
@@ -85,44 +113,62 @@ export default function RegisterForm() {
       notifyError("Mật khẩu không khớp");
       return;
     }
-    const isValidPhoneNumber = ValidPhoneNumber(UserData.userPhone);
+    const isValidPhoneNumber = ValidPhoneNumber(UserData.phoneNumber);
     if (!isValidPhoneNumber) {
       notifyError("Số điện thoại không đúng định dạng");
       return;
     }
-    const auth = getAuth();
 
     createUserWithEmailAndPassword(auth, UserData.email, UserData.password)
       .then((userCredential) => {
         // Signed up
+
         const user = userCredential.user;
-        console.log("Đăng ký thất bại. userrrrrrrrrrrrrrr:", user);
         // Cập nhật UserData với uid
+        // const formatCreatedAt = formatDateTimeAndReturnDateTime(
+        //   UserData.createdAt
+        // );
+        // const formatUpdatedAt = formatDateTimeAndReturnDateTime(
+        //   UserData.updatedAt
+        // );
         const updatedUserData = {
           ...UserData,
-          id: user.uid,
+          uid: user.uid,
         };
-
-        // Thêm vào Firestore
+        // updatedUserData.password = HashUserPassword(UserData) as string;
         return addUserDataToFirestore(updatedUserData);
       })
       .catch((error) => {
-        // Xử lý lỗi
-        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!1111");
-        console.log("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!", error);
+        if (error.code === "auth/email-already-in-use") {
+          notifyError("Tài khoản email đã được đăng ký. Vui lòng kiểm tra lại");
+          return;
+        } else {
+          // Xử lý lỗi
+          notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
+          return;
+        }
       });
 
     // Hàm thêm dữ liệu người dùng vào Firestore
-    const addUserDataToFirestore = async (userData: UserModel) => {
+    const addUserDataToFirestore = async (UserData: UserModel) => {
       try {
-        await addDoc(collection(db, "users"), userData);
-
+        const hashedPassword = await hashPassword(UserData.password);
+        UserData.password = hashedPassword as string;
+        // Gọi hàm để hash mật khẩu của UserData
+        await addDoc(collection(db, "Users"), UserData);
         notifySuccess("Đăng ký thành công. Vui lòng đăng nhập");
         redirectWithDelay("/dang-nhap", 2000);
-        // Lưu thông tin vào local storage
       } catch (error) {
-        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!2222");
-        console.log("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!", error);
+        // deleteUser().then(() => {
+        //   // User deleted.
+        // }).catch((error) => {
+        //   // An error ocurred
+        //   // ...
+        // });
+
+        notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
+        console.error("Lỗi khi thêm dữ liệu người dùng vào Firestore:", error);
+        console.log("UserData sau khi hash:", UserData);
       }
     };
   };
@@ -185,10 +231,10 @@ export default function RegisterForm() {
           <input
             type="date"
             name="birthDay"
-            value={formatDate(UserData.birthDay).toString()}
+            value={birthDay}
             max="2010-01-01"
             min="1960-01-01"
-            onChange={handleChange}
+            onChange={handleDateChange}
             className="w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
@@ -198,7 +244,7 @@ export default function RegisterForm() {
           selectedValue={UserData.gender}
           onChange={(value: string) => handleGenderChange(value as Gender)}
           includeEmpty={false}
-          emptyLabel="Chọn giới tính" // Label tùy chỉnh cho option rỗng
+          emptyLabel="Chọn giới tính"
         />
         <TextInput
           label="Địa chỉ mặc định"
@@ -220,9 +266,9 @@ export default function RegisterForm() {
         />
         <TextInput
           label="Số điện thoại"
-          type="string"
-          name="userPhone"
-          value={UserData.userPhone}
+          type="text"
+          name="phoneNumber"
+          value={UserData.phoneNumber}
           onChange={handleChange}
           placeholder="0123456789"
           isRequired={false}

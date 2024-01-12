@@ -5,11 +5,11 @@ import Image from "next/image";
 import logoGoogle from "#/assets/images/logo_Google.png";
 import logoFacebook from "#/assets/images/Logo_Facebook.png";
 import TextInput from "@/Components/Input-Text";
-import userData from "@/Models/User-Model";
+import { LoginModel } from "@/Core/Base-Model";
 import { redirectWithDelay } from "@/Core/Utils";
 import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { Gender } from "@/Core/Global-Enums";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase/firebase.config";
 
 export default function Login() {
   useEffect(() => {
@@ -22,18 +22,9 @@ export default function Login() {
     }
   }, []);
 
-  const [userData, setFormData] = useState<userData>({
-    id: "",
+  const [userData, setFormData] = useState<LoginModel>({
     email: "",
     password: "",
-    firstName: "",
-    lastName: "",
-    birthDay: new Date(),
-    gender: "" || Gender.Male || Gender.Female || Gender.Other,
-    defaultAddress: "",
-    shippingAddress: "",
-    userPhone: "",
-    imageUserUrl: "",
   });
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -53,13 +44,13 @@ export default function Login() {
       return;
     }
 
-    const auth = getAuth();
-
     signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then(async (userCredential) => {
+        const user = userCredential.user;
         const token = await (userCredential.user?.getIdToken?.() ?? null);
         localStorage.setItem("token", token ?? "");
         localStorage.setItem("userid", userCredential.user.uid ?? "");
+        localStorage.setItem("user", JSON.stringify(user));
         notifySuccess("Đăng nhập thành công");
         redirectWithDelay("/", 1000);
         // setLocalStore();
@@ -68,9 +59,7 @@ export default function Login() {
         if (error.code === "auth/email-already-in-use") {
           notifyError("Email đã tồn tại");
         } else if (error.code === "auth/invalid-email") {
-          notifyError(
-            "Tên tài khoản hoặc email không đúng. Vui lòng kiểm tra lại"
-          );
+          notifyError("Email không đúng. Vui lòng kiểm tra lại");
         } else if (error.code === "auth/wrong-password") {
           notifyError("Password không đúng. Vui lòng kiểm tra lại");
         } else if (error.code === "auth/user-not-found") {

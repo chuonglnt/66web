@@ -45,6 +45,7 @@ const HeaderAdmin = () => {
               alt="Picture of the author"
               width={24}
               height={24}
+              priority={true}
               className="h-8 w-8 rounded-full bg-zinc-300 flex items-center justify-center text-center"
             />
           </div>

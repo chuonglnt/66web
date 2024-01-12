@@ -7,13 +7,12 @@ import Link from "next/link";
 import { Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { app } from "@/Lib/firebase";
+import { auth } from "@/lib/firebase/firebase.config";
 
 export default function AvatarMenu() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // Nếu user tồn tại, tức là đã đăng nhập
@@ -35,12 +34,9 @@ export default function AvatarMenu() {
     setAnchorEl(null);
   };
   function handleLogout() {
-    const auth = getAuth(app);
-
     signOut(auth)
       .then(() => {
         // Đăng xuất thành công
-        console.log("Đăng xuất thành công");
         localStorage.removeItem("token");
       })
       .catch((error) => {
@@ -123,37 +119,3 @@ export default function AvatarMenu() {
     </div>
   );
 }
-
-// "use client";
-// import React, { useState } from "react";
-// import Image from "next/image";
-// import Link from "next/link";
-
-// const AvatarMenu = () => {
-//   const [menuOpen, setMenuOpen] = useState(false);
-
-//   const toggleMenu = () => {
-//     setMenuOpen(!menuOpen);
-//   };
-//   return (
-//     <div>
-//       <button onClick={toggleMenu}>
-//         <Image
-//           src="assets\images\avarta.png"
-//           alt="Avatar"
-//           width={50}
-//           height={50}
-//         />
-//       </button>
-//       <Link href="/dang-nhap">Đăng nhập</Link>
-//       <Link href="/dang-ky">Đăng ký</Link>
-//       {menuOpen && (
-//         <div>
-//           <button>Đăng xuất</button>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default AvatarMenu;
