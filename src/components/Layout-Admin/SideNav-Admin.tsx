@@ -22,12 +22,12 @@ const SideNavAdmin = () => {
             width={100}
             height={100}
             priority={true}
-            className="w-full mx-2 my-2"
+            className="w-full mx-1 my-1"
           />
           {/* <span className="font-bold text-xl hidden md:flex">Logo</span> */}
         </Link>
 
-        <div className="flex flex-col space-y-2  md:px-6 ">
+        <div className="flex flex-col space-y-1 text-md  md:px-6 ">
           {SIDENAV_ITEMS.map((item, idx) => {
             return <MenuItem key={idx} item={item} />;
           })}
@@ -52,13 +52,13 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
         <>
           <button
             onClick={toggleSubMenu}
-            className={`flex flex-row items-center p-2 rounded-lg hover-bg-zinc-100 w-full justify-between hover:bg-zinc-100 ${
+            className={`flex flex-row items-center p-2 w-full font-medium justify-between hover:bg-green-default rounded-lg ${
               pathname.includes(item.path) ? "bg-zinc-100" : ""
             }`}
           >
-            <div className="flex flex-row space-x-4 items-center">
+            <div className="flex flex-row space-x-2 items-center">
               {item.icon}
-              <span className="font-semibold text-xl  flex">{item.title}</span>
+              <span className="font-semibold text-lg flex">{item.title}</span>
             </div>
 
             <div className={`${subMenuOpen ? "rotate-180" : ""} flex`}>
@@ -67,13 +67,13 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
           </button>
 
           {subMenuOpen && (
-            <div className="my-2 ml-12 flex flex-col space-y-4">
+            <div className="my-2 ml-12 flex flex-col space-y-4 ">
               {item.subMenuItems?.map((subItem, idx) => {
                 return (
                   <Link
                     key={idx}
                     href={subItem.path}
-                    className={`${
+                    className={`hover:bg-green-default rounded-lg items-center justify-center px-2 py-0.5${
                       subItem.path === pathname ? "font-bold" : ""
                     }`}
                   >
@@ -87,7 +87,7 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
       ) : (
         <Link
           href={item.path}
-          className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-zinc-100 ${
+          className={`flex flex-row space-x-2 items-center p-2 hover:bg-green-default rounded-lg ${
             item.path === pathname ? "bg-zinc-100" : ""
           }`}
         >

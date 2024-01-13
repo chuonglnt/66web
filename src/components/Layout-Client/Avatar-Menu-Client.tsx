@@ -38,6 +38,8 @@ export default function AvatarMenu() {
       .then(() => {
         // Đăng xuất thành công
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("userid");
       })
       .catch((error) => {
         // Xử lý lỗi

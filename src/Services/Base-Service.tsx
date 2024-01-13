@@ -17,11 +17,10 @@ export const GetAll = async <T extends DocumentData>(
 ): Promise<T[]> => {
   const querySnapshot = await getDocs(collection(db, collectionName));
   return querySnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
-    uid: doc.id,
+    id: doc.id,
     ...(doc.data() as T),
     // Sử dụng type assertion ở đây
   }));
-  console.log("Promiseeeeeeeeeeeeeeeeeeeeeeeeee", Promise<T[]>);
 };
 
 export const Detail = async <T extends DocumentData>(

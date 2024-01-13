@@ -1,12 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { initAdmin } from "@/lib/firebase/firebase-admin.config";
-import { getLogo, getLogoFromStorage } from "@/lib/firebase/firebase";
+// This file is intentionally left empty.
 export default async function Logo() {
-  await initAdmin();
-  const logo = "/api/image";
-  // const logo = await getLogoFromStorage();
+  const logo = "/assets/images/logo.png";
   return (
     <Link href="/">
       <Image
