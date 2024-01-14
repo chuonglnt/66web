@@ -14,6 +14,20 @@ body {
   @apply absolute top-11 z-50 w-full text-center my-auto bg-white;
 } */
 
+.c66-btn-cancel-modal {
+  @apply mx-1 px-8 py-2 justify-center text-center font-semibold text-sm bg-green-default cursor-pointer rounded-full text-white hover:bg-green-800;
+}
+.c66-btn-confirm-modal {
+  @apply mx-1 px-4 py-2 justify-center text-center font-semibold text-sm bg-red-500 cursor-pointer rounded-full text-white hover:bg-red-800;
+}
+.c66-btn-edit-data-grid {
+  @apply mx-1 px-4 py-2 justify-center text-center font-semibold text-sm bg-green-default cursor-pointer rounded-full text-white hover:bg-green-800;
+}
+
+.c66-btn-delete-data-grid {
+  @apply mx-1 px-3 py-1 justify-center text-center font-semibold text-sm bg-red-400 cursor-pointer rounded-full text-white hover:bg-red-700;
+}
+
 .c66-top-menu-item {
   @apply font-medium text-sm cursor-pointer py-1 active:text-gray-800 active:bg-green-default hover:text-gray-800 relative after:lg:absolute after:lg:bottom-0 after:lg:left-0 after:lg:bg-green-default after:lg:h-0.5 after:lg:w-0 hover:after:lg:w-full after:lg:transition-all after:lg:ease-in-out after:lg:duration-300;
 }

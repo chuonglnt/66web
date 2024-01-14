@@ -4,6 +4,8 @@ import { useSelectedLayoutSegment } from "next/navigation";
 import { cn } from "@/Core/Utils";
 import UseScroll from "@/Core/Use-Scroll";
 import Image from "next/image";
+import logoImg from "$/assets/images/logo.png";
+import avatarImg from "$/assets/images/avata-default.jpg";
 
 const HeaderAdmin = () => {
   const scrolled = UseScroll(5);
@@ -27,7 +29,7 @@ const HeaderAdmin = () => {
           >
             {/* <span className="h-7 w-7 bg-zinc-300 rounded-lg" /> */}
             <Image
-              src={"/assets/images/logo.png"}
+              src={logoImg}
               alt="Picture of the author"
               width={24}
               height={24}
@@ -41,7 +43,7 @@ const HeaderAdmin = () => {
         <div className="hidden md:block">
           <div className="h-8 w-8 rounded-full bg-zinc-300 flex items-center justify-center text-center">
             <Image
-              src={"/assets/images/avarta.png"}
+              src={avatarImg}
               alt="Picture of the author"
               width={24}
               height={24}

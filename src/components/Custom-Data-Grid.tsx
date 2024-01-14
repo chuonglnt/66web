@@ -5,6 +5,7 @@ import {
   GridColDef,
   GridRenderCellParams,
 } from "@mui/x-data-grid";
+import ConfirmModal from "@/Components/Confirm-Modal";
 
 type CustomDataGridProps = {
   columns: GridColDef[];
@@ -25,15 +26,15 @@ const CustomDataGrid = ({
     headerName: "Actions",
     width: 180,
     renderCell: (params: GridRenderCellParams) => (
-      <div className="flex gap-2">
+      <div className="flex items-center justify-center gap-2 ">
         {editPath && (
           <Link href={`/users/${params.row.id}`} passHref>
-            <span className="text-blue-500 cursor-pointer">Edit</span>
+            <span className="c66-btn-edit-data-grid">Edit</span>
           </Link>
         )}
         {handleDelete && (
           <button
-            className="text-red-500"
+            className="c66-btn-delete-data-grid"
             onClick={() => handleDelete(params.row.id)}
           >
             Delete
@@ -48,8 +49,13 @@ const CustomDataGrid = ({
     editPath || handleDelete ? [...columns, actionColumn] : columns;
 
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <div style={{ height: "100%", width: "100%" }}>
       <MuiDataGrid
+        sx={{
+          "& .MuiDataGrid-cell:hover": {
+            color: "primary.main",
+          },
+        }}
         rows={rows}
         getRowId={(row) => row.uid}
         columns={gridColumns}

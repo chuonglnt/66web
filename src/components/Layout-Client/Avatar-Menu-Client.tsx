@@ -8,6 +8,7 @@ import { Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase/firebase.config";
+import avatarImg from "$/assets/images/avata-default.jpg";
 
 export default function AvatarMenu() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,6 +18,9 @@ export default function AvatarMenu() {
       if (user) {
         // Nếu user tồn tại, tức là đã đăng nhập
         setIsLoggedIn(true);
+        localStorage.getItem("photoUrl");
+        localStorage.getItem("firstName");
+        localStorage.getItem("displayName");
       } else {
         // Người dùng đã đăng xuất
         setIsLoggedIn(false);
@@ -38,6 +42,8 @@ export default function AvatarMenu() {
       .then(() => {
         // Đăng xuất thành công
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("userid");
       })
       .catch((error) => {
         // Xử lý lỗi
@@ -82,7 +88,7 @@ export default function AvatarMenu() {
               aria-expanded={open ? "true" : undefined}
               onClick={handleClick}
             >
-              <Avatar alt="Remy Sharp" src="assets\images\avarta.png" />
+              <Avatar alt="Remy Sharp" src={`${avatarImg}`} />
             </Button>
 
             <Menu

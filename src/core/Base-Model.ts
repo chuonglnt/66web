@@ -1,6 +1,7 @@
 import { Gender } from "@/Core/Global-Enums";
 
 export interface UserModel {
+  id: string;
   uid: string;
   email: string;
   password: string;

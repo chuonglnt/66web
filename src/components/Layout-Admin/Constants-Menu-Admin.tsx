@@ -6,12 +6,12 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: "Home",
     path: "/admin",
-    icon: <Icon icon="lucide:home" width="24" height="24" />,
+    icon: <Icon icon="icon-park:home" width="32" height="32" />,
   },
   {
     title: "Tài Khoản",
     path: "/account",
-    icon: <Icon icon="lucide:account" width="24" height="24" />,
+    icon: <Icon icon="icon-park:open-an-account" width="32" height="32" />,
     submenu: true,
     subMenuItems: [
       { title: "Danh sách", path: "/admin/users" },
@@ -22,7 +22,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: "Đơn hàng",
     path: "/account",
-    icon: <Icon icon="lucide:account" width="24" height="24" />,
+    icon: <Icon icon="icon-park:transaction-order" width="32" height="32" />,
     submenu: true,
     subMenuItems: [
       { title: "Đơn mới", path: "/admin" },
@@ -33,12 +33,12 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: "Sản Phẩm",
     path: "/san-pham",
-    icon: <Icon icon="lucide:mail" width="24" height="24" />,
+    icon: <Icon icon="logos:productboard-icon" width="32" height="32" />,
   },
   {
     title: "Danh mục",
     path: "/danh-muc",
-    icon: <Icon icon="lucide:settings" width="24" height="24" />,
+    icon: <Icon icon="icon-park:category-management" width="32" height="32" />,
     submenu: true,
     subMenuItems: [
       { title: "Thêm danh mục", path: "/admin" },
@@ -48,11 +48,11 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: "Báo cáo",
     path: "/account",
-    icon: <Icon icon="lucide:account" width="24" height="24" />,
+    icon: <Icon icon="icon-park:table-report" width="32" height="32" />,
   },
   {
     title: "Cài đặt",
     path: "/",
-    icon: <Icon icon="lucide:help-circle" width="24" height="24" />,
+    icon: <Icon icon="icon-park:setting" width="32" height="32" />,
   },
 ];

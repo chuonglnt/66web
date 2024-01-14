@@ -5,26 +5,22 @@ import {
   checkPasswordLength,
   redirectWithDelay,
   formatDateTime,
-  convertToDateTime,
 } from "@/Core/Utils";
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import UserModel from "@/Core/Base-Model";
 import TextInput from "@/Components/Input-Text";
 import Button from "@/Components/Button";
 import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
 import { db, auth } from "@/lib/firebase/firebase.config";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  deleteUser,
-} from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import EnumSelect from "@/Components/Enum-Select";
 import { Gender } from "@/Core/Global-Enums";
 import hashPassword from "@/Core/Hash-Password";
 
 export default function RegisterForm() {
   const [UserData, setUserData] = useState<UserModel>({
+    id: "",
     uid: "",
     email: "",
     password: "",
@@ -72,16 +68,6 @@ export default function RegisterForm() {
       [name]: value,
     }));
   };
-  // Hàm hash mật khẩu
-  // function HashUserPassword(UserData: UserModel) {
-  //   hashPassword(UserData.password)
-  //     .then((hashedPassword) => {
-  //       UserData.password = hashedPassword as string;
-  //       setUserData(UserData);
-  //       // Cập nhật mật khẩu đã hash vào UserData
-  //     })
-  //     .catch((error) => console.error("Lỗi khi hash mật khẩu:", error));
-  // }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -121,21 +107,11 @@ export default function RegisterForm() {
 
     createUserWithEmailAndPassword(auth, UserData.email, UserData.password)
       .then((userCredential) => {
-        // Signed up
-
         const user = userCredential.user;
-        // Cập nhật UserData với uid
-        // const formatCreatedAt = formatDateTimeAndReturnDateTime(
-        //   UserData.createdAt
-        // );
-        // const formatUpdatedAt = formatDateTimeAndReturnDateTime(
-        //   UserData.updatedAt
-        // );
         const updatedUserData = {
           ...UserData,
           uid: user.uid,
         };
-        // updatedUserData.password = HashUserPassword(UserData) as string;
         return addUserDataToFirestore(updatedUserData);
       })
       .catch((error) => {
@@ -143,29 +119,19 @@ export default function RegisterForm() {
           notifyError("Tài khoản email đã được đăng ký. Vui lòng kiểm tra lại");
           return;
         } else {
-          // Xử lý lỗi
           notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
           return;
         }
       });
 
-    // Hàm thêm dữ liệu người dùng vào Firestore
     const addUserDataToFirestore = async (UserData: UserModel) => {
       try {
         const hashedPassword = await hashPassword(UserData.password);
         UserData.password = hashedPassword as string;
-        // Gọi hàm để hash mật khẩu của UserData
-        await addDoc(collection(db, "Users"), UserData);
+        await addDoc(collection(db, "users"), UserData);
         notifySuccess("Đăng ký thành công. Vui lòng đăng nhập");
-        redirectWithDelay("/dang-nhap", 2000);
+        // redirectWithDelay("/dang-nhap", 2000);
       } catch (error) {
-        // deleteUser().then(() => {
-        //   // User deleted.
-        // }).catch((error) => {
-        //   // An error ocurred
-        //   // ...
-        // });
-
         notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
         console.error("Lỗi khi thêm dữ liệu người dùng vào Firestore:", error);
         console.log("UserData sau khi hash:", UserData);
