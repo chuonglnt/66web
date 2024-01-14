@@ -2,8 +2,8 @@
 
 import { useState, useEffect, ChangeEvent } from "react";
 import Image from "next/image";
-import logoGoogle from "#/assets/images/logo_Google.png";
-import logoFacebook from "#/assets/images/Logo_Facebook.png";
+import logoGoogle from "$/assets/images/logo_Google.png";
+import logoFacebook from "$/assets/images/logo_Facebook.png";
 import TextInput from "@/Components/Input-Text";
 import { LoginModel } from "@/Core/Base-Model";
 import { redirectWithDelay } from "@/Core/Utils";
@@ -49,8 +49,11 @@ export default function Login() {
         const user = userCredential.user;
         const token = await (userCredential.user?.getIdToken?.() ?? null);
         localStorage.setItem("token", token ?? "");
-        localStorage.setItem("userid", userCredential.user.uid ?? "");
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("dataInfo", userCredential.user.uid ?? "");
+        localStorage.setItem(
+          "user",
+          JSON.stringify(user.displayName && user.photoURL)
+        );
         notifySuccess("Đăng nhập thành công");
         redirectWithDelay("/", 1000);
         // setLocalStore();
@@ -105,6 +108,8 @@ export default function Login() {
           alt="Logo"
           width={28}
           height={28}
+          loading="lazy"
+          priority={true}
         />
         <Image
           className="h-12 w-auto"
@@ -112,6 +117,8 @@ export default function Login() {
           alt="Logo"
           width={48}
           height={48}
+          loading="lazy"
+          priority={true}
         />
       </div>
       <h5 className="text-center text-sm font-extrabold text-gray-900 mb-6">

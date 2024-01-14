@@ -33,7 +33,7 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-    unoptimized: false,
+    unoptimized: true,
   },
 };
 module.exports = nextConfig;

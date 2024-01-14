@@ -24,6 +24,7 @@ function UsersPage() {
     { field: "emailVerified", headerName: "Xác nhận Email", width: 60 },
     { field: "isdeleted", headerName: "Xóa", width: 60 },
   ];
+
   const fetcher = async (): Promise<UserModel[] | any> => {
     try {
       const data = await GetAll("users"); // 'users' là tên collection

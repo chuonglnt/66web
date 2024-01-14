@@ -31,15 +31,9 @@
       }
     ],
     "paths": {
+      "$/*": ["./public/*"],
       "@/*": ["./src/*"],
-      "#/*": ["./public/*"],
-
-      "@/icons": ["./public/assets/icons/*"],
-      "@/images": ["./public/assets/images/*"],
-      "@/videos": ["./public/assets/videos/*"],
-
       "@/Components": ["./src/app/components/*"],
-
       "@/Core": ["./src/app/Core/*"],
       "@/lib": ["./src/app/lib/*"],
       "@/Models": ["./src/app/Models/*"],
