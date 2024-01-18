@@ -22,6 +22,8 @@ export default function utils() {
   parseDateTime2;
   trim;
   checkDataType;
+  formatDateForInput;
+  resizeImage;
 }
 
 // export function formatDateTime(dateString: string): string {
@@ -37,7 +39,41 @@ export default function utils() {
 
 //   return formattedDate;
 // }
+async function resizeImage(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
 
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = 360;
+      canvas.height = 360;
+
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Canvas to Blob failed"));
+        }
+      }, file.type);
+    };
+
+    img.onerror = () => reject(new Error("Image loading error"));
+  });
+}
+
+export const formatDateForInput = (dateStr: string) => {
+  const parts = dateStr.split("/"); // hoặc sử dụng định dạng phù hợp với dữ liệu của bạn
+  if (parts.length === 3) {
+    return `${parts[2]}-${parts[1]}-${parts[0]}`; // chuyển đổi từ DD/MM/YYYY sang YYYY-MM-DD
+  }
+  return dateStr;
+};
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
 };

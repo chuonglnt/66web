@@ -1,8 +1,8 @@
 import { Gender } from "@/Core/Global-Enums";
 
 export interface UserModel {
-  id: string;
-  uid: string;
+  id?: string;
+  uid?: string;
   email: string;
   password: string;
   firstName: string;
@@ -90,5 +90,3 @@ export interface LoginModel {
 //   };
 // }
 // }
-
-export default UserModel;

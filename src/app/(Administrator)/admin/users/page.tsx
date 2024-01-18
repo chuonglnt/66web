@@ -1,15 +1,33 @@
 "use client";
-import React, { useState } from "react";
+// ************ Start Import ************
+import React, { useState, useEffect } from "react";
 import ConfirmModal from "@/Components/Confirm-Modal";
 import CustomDataGrid from "@/Components/Custom-Data-Grid";
-import { GetAll, Delete } from "@/Services/Base-Service";
-import useSWR, { mutate } from "swr";
-import Loading from "@/Components/Loading";
 import { notifyError, notifySuccess } from "@/Components/Notification-Messages";
 import Link from "next/link";
-import { UserModel } from "@/Core/Base-Model";
-
-function UsersPage() {
+import { GridRowParams } from "@mui/x-data-grid";
+import {
+  fetchAllUsers,
+  setCurrentUserId,
+  fetchDeleteUser,
+} from "@/lib/redux/features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import { useRouter } from "next/navigation";
+// ************ End Import ************
+export default function UsersDataGridPage() {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const dataObj = useSelector((state: RootState) => state.user.dataObj);
+  const currentUserId = useSelector(
+    (state: RootState) => state.user.currentUserId || ""
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // ************ Getl All Data User First Load For Data Grid ************
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
+  // ************ Config Field For Data Grid ************
   const columns = [
     { field: "firstName", headerName: "Tên", width: 150 },
     { field: "lastName", headerName: "Họ", width: 150 },
@@ -24,51 +42,54 @@ function UsersPage() {
     { field: "emailVerified", headerName: "Xác nhận Email", width: 60 },
     { field: "isdeleted", headerName: "Xóa", width: 60 },
   ];
-
-  const fetcher = async (): Promise<UserModel[] | any> => {
-    try {
-      const data = await GetAll("users"); // 'users' là tên collection
-      return data as UserModel[];
-    } catch (error) {
-      throw error;
-    }
+  // ************ Handle One Click On Data Grid ************
+  const handleRowClick = (params: GridRowParams) => {
+    dispatch(setCurrentUserId(params.row.id));
+    // router.push(`users/${params.row.id}`);
   };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState<string>("");
-  const { data, error } = useSWR<UserModel[]>("usersCollection", fetcher);
+  // ************ Handle Double Click On Data Grid ************
+
+  const handleRowDoubleClick = (params: GridRowParams) => {
+    dispatch(setCurrentUserId(params.row.id));
+    router.push(`users/${params.row.id}`);
+  };
+  // ************ Handle Open Modal To Confirm Delete On Data Grid ************
 
   const handleOpenModal = (id: string) => {
-    setSelectedItemId(id);
+    dispatch(setCurrentUserId(id));
     setIsModalOpen(true);
   };
+  // ************ Handle Close Modal To Confirm Delete On Data Grid ************
+
   const handleClose = () => {
     setIsModalOpen(false);
   };
-  const handleConfirmDelete = async (id: string) => {
+  // ************ Handle Delete After Confirm Delete On Data Grid ************
+  const handleConfirmDelete = async (currentUserId: string) => {
     setIsModalOpen(false);
     try {
-      await Delete("users", id);
-      const updatedData = data?.filter((item: UserModel) => item.id !== id);
-      mutate("usersCollection", updatedData, false);
+      dispatch(fetchDeleteUser(currentUserId));
+      dispatch(fetchAllUsers());
       notifySuccess("Đã xóa thành công");
     } catch (error) {
-      notifyError("Xóa thất bại. Vui lòng thử lại sau");
+      notifyError("Xóa dữ liệu thất bại. Vui lòng thử lại sau");
     }
   };
-
-  if (error) return <div>Failed to load users</div>;
-  if (!data) return <Loading />;
+  // ************ View - Data Grid - Confirm Modal ************
 
   return (
     <div>
       <div>
-        <Link href="/users/create">Thêm mới</Link>
+        <Link href="/admin/users/create">Thêm mới</Link>
       </div>
       <div>
         <CustomDataGrid
           columns={columns}
-          rows={data}
-          editPath={`/users/${data}`}
+          rows={dataObj}
+          basePath="/admin/users"
+          editPath={`${dataObj}`}
+          onRowClick={handleRowClick}
+          onRowDoubleClick={handleRowDoubleClick}
           handleDelete={handleOpenModal}
         />
       </div>
@@ -76,7 +97,7 @@ function UsersPage() {
         <ConfirmModal
           isOpen={isModalOpen}
           onClose={handleClose}
-          onConfirm={() => handleConfirmDelete(selectedItemId)}
+          onConfirm={() => handleConfirmDelete(currentUserId)}
           message="Bạn có chắc chắn muốn xóa mục này không?"
           confirmText="Xác nhận"
           cancelText="Hủy"
@@ -86,5 +107,3 @@ function UsersPage() {
     </div>
   );
 }
-
-export default UsersPage;

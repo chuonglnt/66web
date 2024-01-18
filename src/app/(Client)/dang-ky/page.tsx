@@ -7,7 +7,7 @@ import {
   formatDateTime,
 } from "@/Core/Utils";
 import { useState, FormEvent } from "react";
-import UserModel from "@/Core/Base-Model";
+import { UserModel } from "@/Core/Base-Model";
 import TextInput from "@/Components/Input-Text";
 import Button from "@/Components/Button";
 import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
@@ -17,10 +17,10 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import EnumSelect from "@/Components/Enum-Select";
 import { Gender } from "@/Core/Global-Enums";
 import hashPassword from "@/Core/Hash-Password";
+import DateInput from "@/Components/Input-Date";
 
 export default function RegisterForm() {
   const [UserData, setUserData] = useState<UserModel>({
-    id: "",
     uid: "",
     email: "",
     password: "",
@@ -32,21 +32,24 @@ export default function RegisterForm() {
     shippingAddress: "",
     displayName: "",
     phoneNumber: "",
-    photoUrl: "/assets/images/avataDefault.png",
+    photoUrl: "/assets/images/avata-default.jpg",
     createdAt: formatDateTime(new Date()),
     updatedAt: formatDateTime(new Date()),
     emailVerified: false,
     isdeleted: false,
   });
 
-  const [birthDay, setbirthDay] = useState(Date);
-  const handleDateChange = (x: React.ChangeEvent<HTMLInputElement>) => {
-    const rawDate = x.target.value;
-    // Chuyển đổi sang dd/mm/yyyy
-    const formatedDate = rawDate.split("-").reverse().join("/");
-    setUserData({ ...UserData, birthDay: formatedDate });
-    setbirthDay(rawDate);
+  const handleDateChange = (newDate: string) => {
+    setUserData({ ...UserData, birthDay: newDate });
   };
+  // const [birthDay, setbirthDay] = useState(Date);
+  // const handleDateChange = (x: React.ChangeEvent<HTMLInputElement>) => {
+  //   const rawDate = x.target.value;
+  //   // Chuyển đổi sang dd/mm/yyyy
+  //   const formatedDate = rawDate.split("-").reverse().join("/");
+  //   setUserData({ ...UserData, birthDay: formatedDate });
+  //   setbirthDay(rawDate);
+  // };
 
   const [confirmPassword, setConfirmPassword] = useState("");
   const handlePasswordChange = (x: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,7 +193,12 @@ export default function RegisterForm() {
           placeholder="Họ của bạn"
           isRequired={true}
         />
-        <div className="mb-4">
+        <DateInput
+          label="Ngày sinh"
+          value={UserData.birthDay}
+          onChange={handleDateChange}
+        ></DateInput>
+        {/* <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Ngày sinh
           </label>
@@ -203,7 +211,7 @@ export default function RegisterForm() {
             onChange={handleDateChange}
             className="w-full p-2 border border-gray-300 rounded-md"
           />
-        </div>
+        </div> */}
         <EnumSelect
           label="Giới tính"
           enumObj={Gender}

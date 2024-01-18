@@ -9,7 +9,7 @@
     "src/lib/firebase/firebase.config.js",
     "src/app/(Dashboard)/layout.tsx",
     "src/app/(View)/layout.tsx"
-  ],
+, "src/app/(Client)/not-found.js", "src/app/(Client)/404.js", "src/app/(Client)/error.js", "src/app/not-found.tsx", "src/app/(Administrator)/layout.tsx"  ],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "target": "es5",
