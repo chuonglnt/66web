@@ -8,19 +8,31 @@ import { Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase/firebase.config";
-import avatarImg from "$/assets/images/avata-default.jpg";
+import avatarImgDefault from "$/assets/images/avata-default.jpg";
+import { persistor } from "@/lib/redux/store";
 
 export default function AvatarMenu() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [displayName, setDisplayName] = useState(null);
+  const [firstName, setFirstName] = useState(null);
+  const [photoUrl, setphotoUrl] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
+        const dataInfoString = localStorage.getItem("dataInfo");
+        const dataInfo = dataInfoString ? JSON.parse(dataInfoString) : null;
+        if (dataInfo && dataInfo.displayName) {
+          setDisplayName(dataInfo.displayName);
+        }
+        if (dataInfo && dataInfo.firstName) {
+          setFirstName(dataInfo.firstName);
+        }
+        if (dataInfo && dataInfo.photoUrl) {
+          setphotoUrl(dataInfo.photoUrl);
+        }
         // Nếu user tồn tại, tức là đã đăng nhập
         setIsLoggedIn(true);
-        localStorage.getItem("photoUrl");
-        localStorage.getItem("firstName");
-        localStorage.getItem("displayName");
       } else {
         // Người dùng đã đăng xuất
         setIsLoggedIn(false);
@@ -28,7 +40,8 @@ export default function AvatarMenu() {
     });
     // Dọn dẹp khi component unmount
     return unsubscribe;
-  });
+  }, []);
+  const greetingName = displayName || firstName || "Guest";
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -41,12 +54,11 @@ export default function AvatarMenu() {
     signOut(auth)
       .then(() => {
         // Đăng xuất thành công
+        persistor.purge();
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("userid");
+        localStorage.removeItem("dataInfo");
       })
       .catch((error) => {
-        // Xử lý lỗi
         console.error("Lỗi khi đăng xuất:", error);
       });
   }
@@ -88,7 +100,10 @@ export default function AvatarMenu() {
               aria-expanded={open ? "true" : undefined}
               onClick={handleClick}
             >
-              <Avatar alt="Remy Sharp" src={`${avatarImg}`} />
+              <Avatar
+                alt="avarta customer"
+                src={photoUrl || avatarImgDefault.src}
+              />
             </Button>
 
             <Menu
@@ -100,6 +115,8 @@ export default function AvatarMenu() {
                 "aria-labelledby": "basic-button",
               }}
             >
+              <p>Xin chào, {greetingName}!</p>
+              <hr />
               <MenuItem>
                 <Link href="/admin">Thông tin tài khoản</Link>
               </MenuItem>
