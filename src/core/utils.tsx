@@ -5,10 +5,10 @@ import moment from "moment";
 export default function utils() {
   cn;
   validateNoSpecialCharacters;
-  validateEmail;
-  checkPasswordLength;
+  isValidateEmail;
+  isCheckPasswordLength;
   redirectWithDelay;
-  ValidPhoneNumber;
+  isValidPhoneNumber;
   formatDate;
   formatDateTime;
   formatTime;
@@ -83,17 +83,17 @@ export const validateNoSpecialCharacters = (input: string): boolean => {
   return !specialCharactersRegex.test(input);
 };
 
-export const validateEmail = (email: string): boolean => {
+export const isValidateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-export function ValidPhoneNumber(phoneNumber: string): boolean {
+export function isValidPhoneNumber(phoneNumber: string): boolean {
   const regex = /^\d{10}$/;
   return regex.test(phoneNumber);
 }
 
-export const checkPasswordLength = (password: string): boolean => {
+export const isCheckPasswordLength = (password: string): boolean => {
   return password.length >= 6;
 };
 

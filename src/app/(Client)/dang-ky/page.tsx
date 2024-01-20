@@ -1,10 +1,10 @@
 "use client";
 import {
-  validateEmail,
-  ValidPhoneNumber,
-  checkPasswordLength,
   redirectWithDelay,
   formatDateTime,
+  isValidateEmail,
+  isCheckPasswordLength,
+  isValidPhoneNumber,
 } from "@/Core/Utils";
 import { useState, FormEvent } from "react";
 import { UserModel } from "@/Core/Base-Model";
@@ -88,12 +88,12 @@ export default function RegisterForm() {
       return;
     }
 
-    const isValidEmail = validateEmail(UserData.email);
+    const isValidEmail = isValidateEmail(UserData.email);
     if (!isValidEmail) {
       notifyError("Email không đúng định dạng");
       return;
     }
-    const isValidPassword = checkPasswordLength(UserData.password);
+    const isValidPassword = isCheckPasswordLength(UserData.password);
     if (!isValidPassword) {
       notifyError("Mật khẩu phải ít nhất 6 ký tự");
       return;
@@ -102,8 +102,8 @@ export default function RegisterForm() {
       notifyError("Mật khẩu không khớp");
       return;
     }
-    const isValidPhoneNumber = ValidPhoneNumber(UserData.phoneNumber);
-    if (!isValidPhoneNumber) {
+    const isValidPhone = isValidPhoneNumber(UserData.phoneNumber);
+    if (!isValidPhone) {
       notifyError("Số điện thoại không đúng định dạng");
       return;
     }
@@ -133,7 +133,7 @@ export default function RegisterForm() {
         UserData.password = hashedPassword as string;
         await addDoc(collection(db, "users"), UserData);
         notifySuccess("Đăng ký thành công. Vui lòng đăng nhập");
-        // redirectWithDelay("/dang-nhap", 2000);
+        redirectWithDelay("/dang-nhap", 2000);
       } catch (error) {
         notifyError("Đăng ký thất bại. Vui lòng kiểm tra và thử lại!");
         console.error("Lỗi khi thêm dữ liệu người dùng vào Firestore:", error);

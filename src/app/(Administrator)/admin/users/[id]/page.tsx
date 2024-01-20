@@ -13,44 +13,46 @@ import UserVartaImage from "@/Components/User-Avarta-Image";
 import {
   UpdateUserPayload,
   updateUserField,
-  fetchUserById,
+  fetchUserDetailById,
   fetchUpdateUser,
 } from "@/lib/redux/features/userSlice";
 import InputImage from "@/Components/Input_Image";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { UserModel } from "@/Core/Base-Model";
 
 const UserDetailPage = () => {
-  // const [dataItem, setDataItem] = useState<UserModel>({
-  //   id: "",
-  //   uid: "",
-  //   email: "",
-  //   password: "",
-  //   firstName: "",
-  //   lastName: "",
-  //   birthDay: "",
-  //   gender: "" || Gender.Male || Gender.Female || Gender.Other,
-  //   defaultAddress: "",
-  //   shippingAddress: "",
-  //   displayName: "",
-  //   phoneNumber: "",
-  //   photoUrl: "/assets/images/avata-default.jpg",
-  //   createdAt: formatDateTime(new Date()),
-  //   updatedAt: formatDateTime(new Date()),
-  //   emailVerified: false,
-  //   isdeleted: false,
-  // });
+  const [dataItem, setDataItem] = useState<UserModel>({
+    id: "",
+    uid: "",
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    birthDay: "",
+    gender: "" || Gender.Male || Gender.Female || Gender.Other,
+    defaultAddress: "",
+    shippingAddress: "",
+    displayName: "",
+    phoneNumber: "",
+    photoUrl: "/assets/images/avata-default.jpg",
+    createdAt: "",
+    updatedAt: "",
+    emailVerified: false,
+    isdeleted: false,
+  });
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const currentUserId = useSelector(
     (state: RootState) => state.user.currentUserId
   );
-  const dataItem = useSelector((state: RootState) => state.user.dataItem);
+  const dataItemRedux = useSelector((state: RootState) => state.user.dataItem);
 
   useEffect(() => {
-    dispatch(fetchUserById(currentUserId));
-  }, [currentUserId, dispatch]);
+    dispatch(fetchUserDetailById(currentUserId));
+    setDataItem(dataItemRedux);
+  }, [currentUserId, dispatch, dataItemRedux]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

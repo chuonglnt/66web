@@ -4,6 +4,7 @@ import type { RootState } from "@/lib/redux/store";
 import { UserModel } from "@/Core/Base-Model";
 import {
   GetById,
+  GetByUid,
   GetAll,
   Delete,
   Update,
@@ -12,6 +13,7 @@ import {
 } from "@/Services/Base-Service";
 import { Gender } from "@/Core/Global-Enums";
 import { formatDateTime } from "@/Core/Utils";
+import { notifyError, notifySuccess } from "@/Components/Notification-Messages";
 
 export interface UpdateUserPayload {
   currentUserId: string;
@@ -43,7 +45,7 @@ interface UserState {
     // additionalInfo?: Record<string, any>;
   };
   currentUserId: string;
-  currentUserUid?: string;
+  currentUserUid: string | "";
   isLoading: boolean;
   isError: boolean;
 }
@@ -83,8 +85,8 @@ export const fetchAllUsers = createAsyncThunk(
     return response;
   }
 );
-export const fetchUserById = createAsyncThunk(
-  "user/fetchUserDetail",
+export const fetchUserDetailById = createAsyncThunk(
+  "user/fetchUserDetailById",
   async (currentUserId: string, { rejectWithValue }) => {
     try {
       const response = await GetById("users", currentUserId);
@@ -95,11 +97,36 @@ export const fetchUserById = createAsyncThunk(
   }
 );
 export const fetchUserDetailByUid = createAsyncThunk(
-  "user/fetchUserDetail",
+  "user/fetchUserDetailByUid",
   async (currentUserUid: string, { rejectWithValue }) => {
     try {
-      const response = await GetById("users", currentUserUid);
+      const response = await GetByUid("users", currentUserUid);
       return response as UserModel;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+export const fetchLocalStorageUserByUid = createAsyncThunk(
+  "user/fetchUserDetailByUid",
+  async (currentUserUid: string, { rejectWithValue }) => {
+    try {
+      const response = await GetByUid("users", currentUserUid);
+      const dataItem = response as UserModel;
+      if (!response) {
+        return rejectWithValue({ message: "User not found" });
+      }
+
+      localStorage.setItem(
+        "dataInfo",
+        JSON.stringify({
+          uid: dataItem.uid,
+          email: dataItem.email,
+          displayName: dataItem.displayName,
+          firstName: dataItem.firstName,
+          photoUrl: dataItem.photoUrl,
+        })
+      );
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -116,6 +143,7 @@ export const fetchDeleteUser = createAsyncThunk(
     }
   }
 );
+
 export const fetchUpdateUser = createAsyncThunk(
   "users/updateUser",
   async (
@@ -158,6 +186,9 @@ export const usersSlice = createSlice({
     setCurrentUserId: (state, action: PayloadAction<string>) => {
       state.currentUserId = action.payload;
     },
+    setCurrentUserUid: (state, action: PayloadAction<string>) => {
+      state.currentUserUid = action.payload;
+    },
     setUserDetail: (state, action: PayloadAction<UserModel>) => {
       state.dataItem = action.payload;
     },
@@ -168,12 +199,12 @@ export const usersSlice = createSlice({
       state.dataObj.push(action.payload);
     },
     getlUserById: (state, action) => {
-      const userDetail = state.dataObj.find(
+      const userDetailById = state.dataObj.find(
         (user) => user.id === action.payload
       );
     },
     getlUserByUid: (state, action) => {
-      const userDetail = state.dataObj.find(
+      const userDetailByUid = state.dataObj.find(
         (user) => user.uid === action.payload
       );
     },
@@ -210,39 +241,39 @@ export const usersSlice = createSlice({
         state.isError = true;
       })
       // ************ GET USER BY ID ************
-      .addCase(fetchUserById.pending, (state) => {
+      .addCase(fetchUserDetailById.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
       .addCase(
-        fetchUserById.fulfilled,
+        fetchUserDetailById.fulfilled,
         (state, action: PayloadAction<UserModel>) => {
           state.isLoading = false;
           state.isError = false;
           state.dataItem = action.payload;
         }
       )
-      .addCase(fetchUserById.rejected, (state) => {
+      .addCase(fetchUserDetailById.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
       })
       // ************ GET USER BY UID ************
-      // .addCase(fetchUserDetailByUid.pending, (state) => {
-      //   state.isLoading = true;
-      //   state.isError = false;
-      // })
-      // .addCase(
-      //   fetchUserDetailByUid.fulfilled,
-      //   (state, action: PayloadAction<UserModel>) => {
-      //     state.isLoading = false;
-      //     state.isError = false;
-      //     state.dataItem = action.payload;
-      //   }
-      // )
-      // .addCase(fetchUserDetailByUid.rejected, (state) => {
-      //   state.isLoading = false;
-      //   state.isError = true;
-      // })
+      .addCase(fetchUserDetailByUid.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(
+        fetchUserDetailByUid.fulfilled,
+        (state, action: PayloadAction<UserModel>) => {
+          state.isLoading = false;
+          state.isError = false;
+          state.dataItem = action.payload;
+        }
+      )
+      .addCase(fetchUserDetailByUid.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
       // ************ DELETE ************
 
       .addCase(fetchDeleteUser.pending, (state) => {
@@ -289,6 +320,7 @@ export const {
   deleteUser,
   updateUserField,
   setCurrentUserId,
+  setCurrentUserUid,
   setUserDetail,
 } = usersSlice.actions;
 

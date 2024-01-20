@@ -2,21 +2,32 @@
 import React from "react";
 import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
 
-const AnotherComponent: React.FC = () => {
+const ProductPage: React.FC = () => {
   const handleSuccessClick = () => {
-    notifySuccess("Operation successful!");
+    notifySuccess("Thông báo thành công!");
   };
 
   const handleErrorClick = () => {
-    notifyError("Operation failed!");
+    notifyError("Thông báo thất bại!");
   };
 
   return (
-    <div>
-      <button onClick={handleSuccessClick}>Show Success Notification</button>
-      <button onClick={handleErrorClick}>Show Error Notification</button>
+    <div className="gap-4 items-center justify-center w-full flex flex-col mx-4 my-6">
+      <h1 className="text-2xl font-semibold">Trang Sản Phẩm</h1>
+      <button
+        className="c66-btn-ok-global px-2 py-1"
+        onClick={handleSuccessClick}
+      >
+        Hiển thị thông báo thành công
+      </button>
+      <button
+        className="c66-btn-cancel-global px-2 py-1"
+        onClick={handleErrorClick}
+      >
+        Hiễn thị thông báo thất bại
+      </button>
     </div>
   );
 };
 
-export default AnotherComponent;
+export default ProductPage;

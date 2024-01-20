@@ -2,6 +2,8 @@
 import { Provider } from "react-redux";
 import { store, persistor } from "@/lib/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { AuthProvider } from "@/Components/Auth-Context";
+import Loading from "@/Components/Loading";
 
 export default function StoreProvider({
   children,
@@ -9,10 +11,10 @@ export default function StoreProvider({
   children: React.ReactNode;
 }) {
   return (
-    <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-        {children}
-      </PersistGate>
-    </Provider>
+    <>
+      <AuthProvider>
+        <Provider store={store}>{children}</Provider>
+      </AuthProvider>
+    </>
   );
 }

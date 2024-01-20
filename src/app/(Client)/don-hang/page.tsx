@@ -2,7 +2,7 @@
 import React from "react";
 import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
 
-const CategoryPage: React.FC = () => {
+const OrderPage: React.FC = () => {
   const handleSuccessClick = () => {
     notifySuccess("Thông báo thành công!");
   };
@@ -14,7 +14,7 @@ const CategoryPage: React.FC = () => {
   return (
     <div className="gap-4 items-center justify-center w-full flex flex-col mx-4 my-6">
       <div>
-        <h1 className="text-2xl font-semibold">Trang Danh Mục</h1>
+        <h1 className="text-2xl font-semibold">Trang Quản Lý Đơn Hàng</h1>
       </div>
       <button
         className="c66-btn-ok-global px-2 py-1"
@@ -32,4 +32,4 @@ const CategoryPage: React.FC = () => {
   );
 };
 
-export default CategoryPage;
+export default OrderPage;

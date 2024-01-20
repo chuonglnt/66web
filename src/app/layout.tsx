@@ -34,7 +34,7 @@ export default function RootLayout({
       <body className={`${roboto.className} bg-slate-200 h-screen w-full`}>
         <AppRouterCacheProvider>
           <NotificationMessages />
-          {children}{" "}
+          {children}
         </AppRouterCacheProvider>
       </body>
     </html>

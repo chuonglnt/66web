@@ -6,63 +6,108 @@ import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
 import { Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase/firebase.config";
 import avatarImgDefault from "$/assets/images/avata-default.jpg";
-import { persistor } from "@/lib/redux/store";
+import { AppDispatch, RootState, persistor } from "@/lib/redux/store";
+import { useAuth } from "@/Components/Auth-Context";
+import { useDispatch, useSelector } from "react-redux";
+import { redirect } from "next/navigation";
+import { redirectWithDelay } from "@/Core/Utils";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase/firebase.config";
+import { notifySuccess, notifyError } from "@/Components/Notification-Messages";
+import {
+  fetchLocalStorageUserByUid,
+  setCurrentUserUid,
+} from "@/lib/redux/features/userSlice";
+import { fetchSignOut } from "@/lib/redux/features/loginUserSlice";
+import {
+  setAuthentication,
+  setUnAuthentication,
+} from "@/lib/redux/features/authSlice";
 
 export default function AvatarMenu() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  const dispatch = useDispatch<AppDispatch>();
   const [displayName, setDisplayName] = useState(null);
   const [firstName, setFirstName] = useState(null);
   const [photoUrl, setphotoUrl] = useState(null);
+  const [currentUser, setCurrentUser] = useState<Boolean>(false);
+  const currentUserUid = useSelector(
+    (state: RootState) => state.user.currentUserUid
+  );
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const dataInfoString = localStorage.getItem("dataInfo");
-        const dataInfo = dataInfoString ? JSON.parse(dataInfoString) : null;
-        if (dataInfo && dataInfo.displayName) {
-          setDisplayName(dataInfo.displayName);
+    const unsubscribe = onAuthStateChanged(auth, (userAuth) => {
+      if (userAuth) {
+        dispatch(setAuthentication(isAuthenticated));
+        setCurrentUser(isAuthenticated);
+        dispatch(setCurrentUserUid(userAuth.uid));
+        const dataInfo = localStorage.getItem("dataInfo");
+        if (dataInfo) {
+          dispatch(fetchLocalStorageUserByUid(currentUserUid));
+          const dataInftoString = dataInfo ? JSON.parse(dataInfo) : null;
+          setDisplayName(dataInftoString.displayName);
+          setFirstName(dataInftoString.firstName);
+          setphotoUrl(dataInftoString.photoUrl);
+        } else {
+          dispatch(fetchLocalStorageUserByUid(currentUserUid));
         }
-        if (dataInfo && dataInfo.firstName) {
-          setFirstName(dataInfo.firstName);
-        }
-        if (dataInfo && dataInfo.photoUrl) {
-          setphotoUrl(dataInfo.photoUrl);
-        }
-        // Nếu user tồn tại, tức là đã đăng nhập
-        setIsLoggedIn(true);
       } else {
-        // Người dùng đã đăng xuất
-        setIsLoggedIn(false);
+        localStorage.removeItem("dataInfo");
+        dispatch(setUnAuthentication(isAuthenticated));
       }
+      return () => unsubscribe();
     });
-    // Dọn dẹp khi component unmount
-    return unsubscribe;
-  }, []);
+  }, [dispatch, isAuthenticated, currentUserUid]);
+
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (user) => {
+  //     console.log("user:", user);
+  //     if (user && user !== null) {
+  //       dispatch(setCurrentUserRedux(true));
+  //       const dataInfoString = localStorage.getItem("dataInfo");
+  //       const dataInfo = dataInfoString ? JSON.parse(dataInfoString) : null;
+  //       if (dataInfo && dataInfo.displayName) {
+  //         setDisplayName(dataInfo.displayName);
+  //       }
+  //       if (dataInfo && dataInfo.firstName) {
+  //         setFirstName(dataInfo.firstName);
+  //       }
+  //       if (dataInfo && dataInfo.photoUrl) {
+  //         setphotoUrl(dataInfo.photoUrl);
+  //       }
+  //       // Nếu user tồn tại, tức là đã đăng nhập
+  //       notifyError("Bạn đã đăng nhập");
+  //       // redirectWithDelay("/", 1000);
+  //     } else {
+  //       // Người dùng đã đăng xuất
+  //       dispatch(setCurrentUserRedux(false));
+  //     }
+  //   });
+  // }, [dispatch]);
   const greetingName = displayName || firstName || "Guest";
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+  const [openMenuAvarta, setOpenMenuAvarta] =
+    React.useState<null | HTMLElement>(null);
+  const open = Boolean(openMenuAvarta);
+  const handleClickAvarta = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setOpenMenuAvarta(event.currentTarget);
   };
   const handleClose = () => {
-    setAnchorEl(null);
+    setOpenMenuAvarta(null);
   };
-  function handleLogout() {
-    signOut(auth)
-      .then(() => {
-        // Đăng xuất thành công
-        persistor.purge();
-        localStorage.removeItem("token");
-        localStorage.removeItem("dataInfo");
-      })
-      .catch((error) => {
-        console.error("Lỗi khi đăng xuất:", error);
-      });
-  }
+  // const dispatch = useDispatch<AppDispatch>();
 
+  const handleLogout = () => {
+    setOpenMenuAvarta(null);
+    dispatch(fetchSignOut());
+    dispatch(setUnAuthentication(isAuthenticated));
+    localStorage.removeItem("token");
+    localStorage.removeItem("dataInfo");
+    notifySuccess("Đăng xuất thành công");
+    redirectWithDelay("/", 1000);
+  };
   return (
     <div>
       <div className="flex justify-center text-center lg:-mt-3 sm:mt-0">
@@ -91,14 +136,14 @@ export default function AvatarMenu() {
             </li>
           </ul>
         </div>
-        {isLoggedIn ? (
+        {currentUser === true ? (
           <div className="mt-1 sm:mt-2 lg:mt-3 mx-auto">
             <Button
               id="basic-button"
               aria-controls={open ? "basic-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
+              onClick={handleClickAvarta}
             >
               <Avatar
                 alt="avarta customer"
@@ -108,7 +153,7 @@ export default function AvatarMenu() {
 
             <Menu
               id="basic-menu"
-              anchorEl={anchorEl}
+              anchorEl={openMenuAvarta}
               open={open}
               onClose={handleClose}
               MenuListProps={{
@@ -122,12 +167,12 @@ export default function AvatarMenu() {
               </MenuItem>
               <MenuItem>
                 <Link href="/doi-mat-khau">Đổi mật khẩu</Link>
-              </MenuItem>{" "}
+              </MenuItem>
               <MenuItem>
                 <Link href="/don-hang">Đơn hàng</Link>
-              </MenuItem>{" "}
+              </MenuItem>
               <MenuItem>
-                <a onClick={handleLogout}>Đăng xuất</a>
+                <span onClick={handleLogout}>Đăng xuất</span>
               </MenuItem>
             </Menu>
           </div>
