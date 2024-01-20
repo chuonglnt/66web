@@ -9,6 +9,7 @@ import appStateSlice from "@/lib/redux/features/appStateSlice";
 import userReducer from "@/lib/redux/features/userSlice";
 import userLoginReducer from "@/lib/redux/features/loginUserSlice";
 import loginFormSlice from "@/lib/redux/features/loginFormSlice";
+import authReducer from "@/lib/redux/features/authSlice";
 // ************ End Import Reducer ************
 
 const rootReducer = combineReducers({
@@ -17,11 +18,13 @@ const rootReducer = combineReducers({
   user: userReducer,
   userLogin: userLoginReducer,
   loginForm: loginFormSlice,
+  auth: authReducer,
 });
 // ************ Start Setup Redux Store ************
 const persistConfig = {
   key: "root",
   storage,
+  blacklist: ["loginForm", "userLogin"],
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
